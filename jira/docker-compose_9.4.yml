@@ -1,0 +1,30 @@
+services:
+  db:
+    image: postgres:14
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=jiradb
+      - POSTGRES_PASSWORD=jiradb
+      - POSTGRES_DB=jiradb
+      - POSTGRES_INITDB_ARGS=--encoding=UNICODE --lc-collate=C --lc-ctype=C
+    volumes:
+      - jira-94-db-volume:/var/lib/postgresql
+  jira:
+    container_name: jira
+    image: atlassian/jira-software:9.4.30
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+    volumes:
+      - jira-94_var:/var/atlassian/application-data/jira
+      - jira-94_opt:/opt/atlassian/jira
+    environment:
+      - 'JVM_MINIMUM_MEMORY=2048m'
+      - 'JVM_MAXIMUM_MEMORY=4096m'
+      - 'TZ=Europe/Moscow'
+      - 'JVM_SUPPORT_RECOMMENDED_ARGS=-Dupm.plugin.upload.enabled=true'
+volumes:
+  jira-94-db-volume:
+  jira-94_var:
+  jira-94_opt:
